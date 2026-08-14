@@ -13,7 +13,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/",
+  "start_url": "/pwa-smartbus/",
+  "scope": "/pwa-smartbus/",
   "background_color": "#0f172a",
   "theme_color": "#1e293b",
   "display": "standalone",
