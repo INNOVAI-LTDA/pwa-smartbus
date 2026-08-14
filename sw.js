@@ -1,8 +1,8 @@
 const CACHE_NAME = 'smartbus-hello-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/pwa-smartbus/',
+  '/pwa-smartbus/index.html',
+  '/pwa-smartbus/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
