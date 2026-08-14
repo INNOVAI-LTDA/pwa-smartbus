@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SmartBus Condomínio</title>
+
+  <!-- PWA & Meta Tags Específicas do iOS -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartBus">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/180/0284c7/ffffff?text=Bus">
+
+  <!-- Mapas Leaflet.js -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #0f172a;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      /* Adaptação para o Notch e Barra Inferior do iPhone */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Topo do App */
+    header {
+      background: #1e293b;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+
+    .status-badge {
+      font-size: 12px;
+      background: #0284c7;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    /* Container do Mapa */
+    #map {
+      flex: 1;
+      width: 100%;
+      z-index: 1;
+    }
+
+    /* Card Inferior com Informações */
+    .bottom-sheet {
+      background: #1e293b;
+      padding: 16px;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+
+    .bus-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #f8fafc;
+    }
+
+    .eta-text {
+      color: #38bdf8;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1 style="font-size: 16px;">SmartBus Showroom</h1>
+      <span style="font-size: 12px; color: #94a3b8;">Condomínio Exemplo</span>
+    </div>
+    <span class="status-badge">Ao Vivo</span>
+  </header>
+
+  <div id="map"></div>
+
+  <div class="bottom-sheet">
+    <div class="bus-title">Linha 01 — Circular Principal</div>
+    <div class="eta-text" id="eta-status">Próxima parada: Bloco 02 (ETA: 3 min)</div>
+  </div>
+
+  <script>
+    // 1. Registrar o Service Worker (Obrigatório para PWA)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW instalado com sucesso!'))
+        .catch(err => console.error('Erro no SW:', err));
+    }
+
+    // 2. Coordenadas Iniciais do Mock (Centro do Rio de Janeiro)
+    const mockRoute = [
+      [-22.9068, -43.1728],
+      [-22.9075, -43.1735],
+      [-22.9082, -43.1742],
+      [-22.9090, -43.1750]
+    ];
+
+    // Initialize Map
+    const map = L.map('map', { zoomControl: false }).setView(mockRoute[0], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Marcador do Ônibus
+    const busMarker = L.marker(mockRoute[0]).addTo(map)
+      .bindPopup("<b>Ônibus Circular</b><br>Em movimento");
+
+    // 3. Loop de Simulação de Movimento
+    let step = 0;
+    setInterval(() => {
+      step = (step + 1) % mockRoute.length;
+      const nextCoords = mockRoute[step];
+      
+      busMarker.setLatLng(nextCoords);
+      map.panTo(nextCoords);
+
+      document.getElementById('eta-status').innerText = 
+        `Próxima parada: Ponto ${step + 1} (Atualizado agora)`;
+    }, 3000);
+  </script>
+</body>
+</html>
