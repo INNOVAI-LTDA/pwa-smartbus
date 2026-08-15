@@ -1,8 +1,10 @@
-const CACHE_NAME = 'smartbus-hello-v1';
+const CACHE_NAME = 'smartbus-pdr-v3';
 const ASSETS = [
   '/pwa-smartbus/',
   '/pwa-smartbus/index.html',
-  '/pwa-smartbus/manifest.json'
+  '/pwa-smartbus/manifest.json',
+  '/pwa-smartbus/js/routesData.js',
+  '/pwa-smartbus/js/app.js'
 ];
 
 self.addEventListener('install', (event) => {
